@@ -5,46 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>...</title>
-</head>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        margin-top: 50px;
-    }
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
 
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-    }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
 
-    .modal-content {
-        background: white;
-        padding: 20px;
-        margin: 15% auto;
-        width: 300px;
-        text-align: center;
-        border-radius: 10px;
-    }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            margin: 15% auto;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
 
-    button {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-    }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-    input {
-        padding: 10px;
-        font-size: 16px;
-        width: 80%;
-        text-align: center;
-    }
-</style>
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 80%;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -69,43 +68,52 @@
         src="https://open.spotify.com/embed/album/3Cjn6aliQrVp6MPiU4oAdw?utm_source=generator" width="100%" height="352"
         frameBorder="0" allowfullscreen=""
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    <h2>
-        <iframe style="border-radius:12px"
-            src="https://open.spotify.com/embed/album/5CP84pfi4AFe95UTACFWrk?utm_source=generator" width="100%"
-            height="352" frameBorder="0" allowfullscreen=""
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    <iframe style="border-radius:12px"
+        src="https://open.spotify.com/embed/album/5CP84pfi4AFe95UTACFWrk?utm_source=generator" width="100%" height="352"
+        frameBorder="0" allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 
-        <h3></h3>
-        <button onclick="openModal()">eu mudei a senha agr </button>
-        <div class="modal" id="modal">
-            <div class="modal-content">
-                <h2>
-                    <p>em algum dia do ano, eu vou me lembrar de colocar a senha no site... e nao, eu nao vou esquecer
-                        de
-                        colocar, so questao de tempo ate aparecer... (detalhe, foi uma data que me marcou mt, entao...)
-                        so
-                        nao esquece de ver em algum dia sla</p>
-                </h2>
-                <input type="text" id="senha" maxlength="16/05/2024" oninput="validateInput(event)">
-                <br><br>
-                <button onclick="verificarSenha()">Confirmar</button>
+    isso tudo so pra dar um ponto final de vdd, dps de eu realmente ter brincado com tudo que aconteceu, e visto q eu
+    fui um merda, acredito que dps de tudo, voce merece algo digno dps do que aconteceu entre nos
+    <p>espero que isso nao saia daqui, e se virar print, fds tbm, cada um com sua consciência</p>
+    <button onclick="openModal('modalSenha')">eu mudei a senha agr</button>
 
-            </div>
+    <div class="modal" id="modalSenha">
+        <div class="modal-content">
+            <h2>Digite a Senha</h2>
+            <input type="text" id="senha">
+            <br><br>
+            <button onclick="verificarSenha()">Confirmar</button>
         </div>
-        <script>
-            function openModal() {
-                document.getElementById("modal").style.display = "block";
-            }
+    </div>
 
-            function verificarSenha() {
-                let senha = document.getElementById("senha").value;
-                if (senha = "23") {
-                    window.location.href = "ainda nao é pra saber oq tem aqui, espertinhakkkkk";
-                } else {
-                    location.reload();
-                }
+    <div class="modal" id="modalErro">
+        <div class="modal-content">
+            <h2>Senha Incorreta</h2>
+            <p> ainda nao é pra saber oq tem aqui. bobinha.</p>
+            <button onclick="fecharModal('modalErro')">OK</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal(id) {
+            document.getElementById(id).style.display = "block";
+        }
+
+        function fecharModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        function verificarSenha() {
+            let senha = document.getElementById("senha").value;
+            if (senha === "16/05/2024") {
+                window.location.href = "ainda nao é pra saber oq tem aqui, espertinhakkkkk";
+            } else {
+                fecharModal("modalSenha");
+                openModal("modalErro");
             }
-        </script>
+        }
+    </script>
 </body>
 
 </html>
