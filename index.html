@@ -1,1 +1,136 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .bloco {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            width: 120px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .bloco:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .numero {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 600px) {
+            .bloco {
+                width: 100px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1></h1>
+    <div class="container" id="temporizador">
+        <!-- Blocos de tempo são atualizados via JS -->
+    </div>
+
+    <script>
+        const destino = new Date("2025-05-16T00:00:00").getTime();
+
+        function criarBloco(valor, label) {
+            return `
+        <div class="bloco">
+          <div class="numero">${valor}</div>
+          <div class="label">${label}</div>
+        </div>
+      `;
+        }
+
+        function atualizarTemporizador() {
+            const agora = new Date().getTime();
+            let diferenca = destino - agora;
+
+            if (diferenca <= 0) {
+                document.getElementById("temporizador").innerHTML = "<h2>Chegou o dia!</h2>";
+                clearInterval(intervalo);
+                return;
+            }
+
+            const milissegundos = diferenca % 1000;
+            diferenca = Math.floor(diferenca / 1000);
+
+            const segundos = diferenca % 60;
+            diferenca = Math.floor(diferenca / 60);
+
+            const minutos = diferenca % 60;
+            diferenca = Math.floor(diferenca / 60);
+
+            const horas = diferenca % 24;
+            diferenca = Math.floor(diferenca / 24);
+
+            const dias = diferenca % 7;
+            const semanas = Math.floor(diferenca / 7) % 4;
+            const meses = Math.floor(diferenca / 30.44) % 12;
+            const anos = Math.floor(diferenca / 365.25);
+
+            const container = document.getElementById("temporizador");
+            container.innerHTML =
+                criarBloco(anos, "Anos") +
+                criarBloco(meses, "Meses") +
+                criarBloco(semanas, "Semanas") +
+                criarBloco(dias, "Dias") +
+                criarBloco(horas, "Horas") +
+                criarBloco(minutos, "Minutos") +
+                criarBloco(segundos, "Segundos") +
+                criarBloco(milissegundos, "Milissegundos");
+        }
+
+        const intervalo = setInterval(atualizarTemporizador, 50);
+        atualizarTemporizador();
+    </script>
+</body>
+
+</html>
