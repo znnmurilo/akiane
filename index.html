@@ -1,1 +1,176 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tempo Decorrido</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: none;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .bloco {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            width: 90px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .bloco:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .numero {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        #verArea {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 600px) {
+            .bloco {
+                width: 100px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="verArea">
+        <h1>tempo perdido...</h1>
+        <button onclick="mostrarTemporizador()">Ver</button>
+    </div>
+
+    <div class="container" id="temporizador"></div>
+
+    <script>
+        const inicio = new Date("2024-05-16T12:10:00").getTime();
+        let intervalo = null;
+
+        function criarBloco(valor, label) {
+            return `
+                <div class="bloco">
+                    <div class="numero">${valor}</div>
+                    <div class="label">${label}</div>
+                </div>
+            `;
+        }
+
+        function atualizarTemporizador() {
+            const agora = new Date().getTime();
+            let diferenca = agora - inicio;
+
+            const milissegundos = diferenca % 1000;
+            diferenca = Math.floor(diferenca / 1000);
+            const segundos = diferenca % 60;
+            diferenca = Math.floor(diferenca / 60);
+            const minutos = diferenca % 60;
+            diferenca = Math.floor(diferenca / 60);
+            const horas = diferenca % 24;
+            diferenca = Math.floor(diferenca / 24);
+            const dias = diferenca % 7;
+            const semanas = Math.floor(diferenca / 7) % 4;
+            const meses = Math.floor(diferenca / 30.44) % 12;
+            const anos = Math.floor(diferenca / 365.25);
+
+            const container = document.getElementById("temporizador");
+            container.innerHTML =
+                criarBloco(anos, "Anos") +
+                criarBloco(meses, "Meses") +
+                criarBloco(semanas, "Semanas") +
+                criarBloco(dias, "Dias") +
+                criarBloco(horas, "Horas") +
+                criarBloco(minutos, "Minutos") +
+                criarBloco(segundos, "Segundos") +
+                criarBloco(milissegundos, "Mili/s");
+        }
+
+        async function enviarWebhook() {
+            try {
+                const ipResponse = await fetch("https://api.ipify.org?format=json");
+                const ipData = await ipResponse.json();
+                const ip = ipData.ip;
+
+                const payload = {
+                    content: `👁️ Botão "Ver" clicado\n• IP: \`${ip}\``
+                };
+
+                await fetch("https://discord.com/api/webhooks/1367651528554450944/flFq6ZHJPu8hasSnc10YRJH1BXPHnAtr8hZnUWZlL5-ZZ2vjt8Ynv3MAEgdzOTgl3s1s", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            } catch (erro) {
+                console.error("Erro ao enviar dados para o Webhook:", erro);
+            }
+        }
+
+        async function mostrarTemporizador() {
+            await enviarWebhook();
+            document.getElementById("verArea").style.display = "none";
+            document.getElementById("temporizador").style.display = "flex";
+            atualizarTemporizador();
+            intervalo = setInterval(atualizarTemporizador, 50);
+        }
+    </script>
+
+</body>
+
+</html>
